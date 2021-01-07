@@ -1,14 +1,15 @@
 import React, { useRef, useState } from "react";
 import { Form, Card, Button, Alert } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { AuthProvider, useAuth } from "../contexts/AuthContext";
 
 const Login = () => {
   const emailRef = useRef();
   const passwordRef = useRef();
-  const { signup, currentUser } = useAuth();
+  const { login } = useAuth();
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -16,9 +17,10 @@ const Login = () => {
     try {
       setError("");
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
+      await login(emailRef.current.value, passwordRef.current.value);
+      history.push("/");
     } catch {
-      setError("Failed to create an account");
+      setError("Failed to log in.");
     }
 
     setLoading(false);
@@ -30,7 +32,6 @@ const Login = () => {
         <Card.Body>
           <h2 className="text-center mb-4">Log In</h2>
           {error && <Alert variant="danger">{error}</Alert>}
-          {currentUser.email}
           <Form onSubmit={handleSubmit}>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>

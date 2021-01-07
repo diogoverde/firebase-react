@@ -7,12 +7,20 @@ export function useAuth() {
   return useContext(AuthContext);
 }
 
+/**
+ * Change login or signup methods here in order to use something other than firebase
+ *
+ */
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
   function signup(email, password) {
     return auth.createUserWithEmailAndPassword(email, password);
+  }
+
+  function login(email, password) {
+    return auth.signInWithEmailAndPassword(email, password);
   }
 
   useEffect(() => {
@@ -24,7 +32,7 @@ export function AuthProvider({ children }) {
     return unsubscribe;
   }, []);
 
-  const value = { currentUser, signup };
+  const value = { currentUser, signup, login };
 
   return (
     <AuthContext.Provider value={value}>
